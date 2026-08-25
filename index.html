@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -16,7 +15,8 @@ body{
     color:#222
 }
 
-/* LOGIN */
+/* ================= LOGIN ================= */
+
 #loginPage{
     min-height:100vh;
     display:flex;
@@ -77,7 +77,7 @@ body{
     min-height:20px
 }
 
-/* APLIKASI */
+/* ================= APLIKASI ================= */
 
 #appPage{
     display:none
@@ -118,6 +118,8 @@ header p{
     cursor:pointer
 }
 
+/* ================= NAV ================= */
+
 nav{
     background:white;
     padding:10px;
@@ -143,6 +145,8 @@ nav button:hover{
     color:white
 }
 
+/* ================= CONTAINER ================= */
+
 .container{
     padding:20px;
     max-width:1600px;
@@ -156,6 +160,8 @@ nav button:hover{
 .page.active{
     display:block
 }
+
+/* ================= CARD ================= */
 
 .card-container{
     display:grid;
@@ -196,6 +202,12 @@ nav button:hover{
 .card-warning{
     border-left:5px solid #d32f2f
 }
+
+.card-purchase{
+    border-left:5px solid #8e44ad
+}
+
+/* ================= FORM ================= */
 
 form,
 .info-box,
@@ -258,6 +270,13 @@ button{
     color:white
 }
 
+.btn-purple{
+    background:#8e44ad;
+    color:white
+}
+
+/* ================= TABLE ================= */
+
 table{
     width:100%;
     border-collapse:collapse;
@@ -279,6 +298,8 @@ th{
 tr:hover{
     background:#f8fafc
 }
+
+/* ================= STATUS ================= */
 
 .stok-menipis{
     color:red;
@@ -373,12 +394,31 @@ tr:hover{
     flex-wrap:wrap
 }
 
+.backup-box{
+    background:#eef7ff;
+    border:2px solid #1769aa;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:20px
+}
+
+.purchase-total{
+    background:#f4ecf7;
+    border-left:5px solid #8e44ad;
+    padding:15px;
+    border-radius:7px;
+    margin-top:10px;
+    font-weight:bold
+}
+
 footer{
     text-align:center;
     color:#777;
     font-size:12px;
     padding:25px
 }
+
+/* ================= MOBILE ================= */
 
 @media(max-width:700px){
 
@@ -467,7 +507,6 @@ onkeydown="if(event.key==='Enter')login()"
 <div id="loginError" class="login-error"></div>
 
 </div>
-
 </div>
 
 
@@ -481,7 +520,7 @@ APLIKASI
 
 <div>
 <h1>TOKO MAGENTHA</h1>
-<p>Penjualan, Stok & Monitoring Untung Rugi</p>
+<p>Penjualan, Pembelian, Stok & Monitoring Untung Rugi</p>
 </div>
 
 <div class="user-info">
@@ -495,6 +534,10 @@ Logout
 </header>
 
 
+<!-- =====================================================
+NAVIGASI
+===================================================== -->
+
 <nav>
 
 <button onclick="showPage('dashboard')">
@@ -503,6 +546,10 @@ Logout
 
 <button onclick="showPage('produk')">
 📦 Produk
+</button>
+
+<button onclick="showPage('barangMasuk')">
+📥 Barang Masuk
 </button>
 
 <button onclick="showPage('penjualan')">
@@ -515,6 +562,10 @@ Logout
 
 <button onclick="showPage('laporan')">
 📈 Laporan
+</button>
+
+<button onclick="showPage('backup')">
+💾 Backup Data
 </button>
 
 </nav>
@@ -553,6 +604,11 @@ DASHBOARD
 <p id="untungHariIni">Rp 0</p>
 </div>
 
+<div class="card card-purchase">
+<h3>Pembelian Hari Ini</h3>
+<p id="pembelianHariIni">Rp 0</p>
+</div>
+
 <div class="card card-warning">
 <h3>Stok Menipis</h3>
 <p id="stokMenipis">0</p>
@@ -579,7 +635,8 @@ PRODUK
 
 <b>Harga Beli</b> = modal dari supplier.<br>
 <b>Harga Jual</b> = harga kepada pelanggan.<br>
-<b>Keuntungan</b> = Harga Jual - Harga Beli.
+<b>Keuntungan</b> = Harga Jual - Harga Beli.<br>
+<b>Barang Masuk</b> = stok akan otomatis bertambah ketika pembelian dicatat.
 
 </div>
 
@@ -642,6 +699,233 @@ required
 
 
 <!-- =====================================================
+BARANG MASUK
+===================================================== -->
+
+<div id="barangMasuk" class="page">
+
+<h2>📥 Barang Masuk / Pembelian</h2>
+
+<div class="info-box">
+
+<p>
+Gunakan menu ini setiap kali toko membeli atau menerima barang dari supplier.
+</p>
+
+<b>Setelah transaksi disimpan:</b>
+
+<ul>
+<li>Stok produk otomatis bertambah.</li>
+<li>Harga beli produk diperbarui sesuai harga beli terakhir.</li>
+<li>Transaksi masuk ke riwayat pembelian.</li>
+<li>Transaksi dapat dikoreksi atau dihapus.</li>
+</ul>
+
+</div>
+
+
+<form onsubmit="simpanBarangMasuk(event)">
+
+<div>
+
+<label>Tanggal:</label>
+
+<input
+type="date"
+id="tanggalBarangMasuk"
+required
+>
+
+</div>
+
+
+<input
+type="text"
+id="supplierBarangMasuk"
+placeholder="Nama Supplier"
+required
+>
+
+<input
+type="text"
+id="notaBarangMasuk"
+placeholder="Nomor Nota / Faktur"
+>
+
+
+<select
+id="produkBarangMasuk"
+onchange="isiHargaBeliBarangMasuk()"
+required
+>
+
+<option value="">
+Pilih Produk
+</option>
+
+</select>
+
+
+<input
+type="number"
+id="qtyBarangMasuk"
+placeholder="Qty Barang Masuk"
+min="1"
+required
+oninput="hitungTotalBarangMasuk()"
+>
+
+
+<input
+type="number"
+id="hargaBeliBarangMasuk"
+placeholder="Harga Beli / Unit"
+min="0"
+required
+oninput="hitungTotalBarangMasuk()"
+>
+
+
+<div class="purchase-total">
+
+Total Pembelian:
+
+<span id="totalBarangMasuk">
+Rp 0
+</span>
+
+</div>
+
+<br>
+
+<button class="btn-purple">
+📥 Simpan Barang Masuk
+</button>
+
+</form>
+
+
+<!-- EDIT BARANG MASUK -->
+
+<div
+id="editBarangMasukBox"
+class="edit-box"
+style="display:none"
+>
+
+<h3>✏️ Koreksi Barang Masuk</h3>
+
+<input
+type="hidden"
+id="editBarangMasukId"
+>
+
+<label>Supplier</label>
+
+<input
+type="text"
+id="editSupplierBarangMasuk"
+>
+
+
+<label>Nota</label>
+
+<input
+type="text"
+id="editNotaBarangMasuk"
+>
+
+
+<label>Produk</label>
+
+<select id="editProdukBarangMasuk">
+</select>
+
+
+<label>Qty</label>
+
+<input
+type="number"
+id="editQtyBarangMasuk"
+min="1"
+oninput="hitungTotalEditBarangMasuk()"
+>
+
+
+<label>Harga Beli</label>
+
+<input
+type="number"
+id="editHargaBarangMasuk"
+min="0"
+oninput="hitungTotalEditBarangMasuk()"
+>
+
+
+<div class="purchase-total">
+
+Total:
+
+<span id="editTotalBarangMasuk">
+Rp 0
+</span>
+
+</div>
+
+<br>
+
+<button
+class="btn-success"
+onclick="simpanKoreksiBarangMasuk()"
+>
+💾 Simpan Koreksi
+</button>
+
+<button
+class="btn-secondary"
+onclick="batalKoreksiBarangMasuk()"
+>
+Batal
+</button>
+
+</div>
+
+
+<div class="filter-box">
+
+<b>🔎 Filter Tanggal Barang Masuk</b>
+
+<input
+type="date"
+id="filterTanggalBarangMasuk"
+onchange="tampilkanBarangMasuk()"
+>
+
+<button
+class="btn-primary"
+onclick="setTanggalBarangMasukHariIni()"
+>
+Hari Ini
+</button>
+
+<button
+class="btn-secondary"
+onclick="hapusFilterBarangMasuk()"
+>
+Tampilkan Semua
+</button>
+
+</div>
+
+
+<div id="ringkasanBarangMasuk"></div>
+
+<div id="tabelBarangMasuk"></div>
+
+</div>
+
+
+<!-- =====================================================
 PENJUALAN
 ===================================================== -->
 
@@ -685,8 +969,6 @@ Pilih Pembayaran
 
 </form>
 
-
-<!-- EDIT PENJUALAN -->
 
 <div
 id="editPenjualanBox"
@@ -797,7 +1079,7 @@ LAPORAN
 
 <div id="laporan" class="page">
 
-<h2>📈 Laporan Penjualan</h2>
+<h2>📈 Laporan</h2>
 
 <div class="filter-box">
 
@@ -834,8 +1116,6 @@ atau menghapus transaksi.
 
 </div>
 
-
-<!-- EDIT DARI LAPORAN -->
 
 <div
 id="editLaporanBox"
@@ -895,13 +1175,7 @@ Batal
 <div id="laporanPenjualan"></div>
 
 
-<!-- RIWAYAT OPNAME -->
-
-<div class="section-title">
-
 <h2>📜 Riwayat Stock Opname</h2>
-
-</div>
 
 <div class="filter-box">
 
@@ -934,10 +1208,102 @@ Tampilkan Semua
 </div>
 
 
+<!-- =====================================================
+BACKUP
+===================================================== -->
+
+<div id="backup" class="page">
+
+<h2>💾 Backup & Restore Data</h2>
+
+<div class="backup-box">
+
+<h3>🛡️ Backup Data</h3>
+
+<p>
+Gunakan tombol ini untuk menyimpan seluruh data aplikasi
+ke komputer dalam bentuk file JSON.
+</p>
+
+<p>
+Data yang akan dibackup:
+</p>
+
+<ul>
+<li>📦 Master Produk</li>
+<li>📥 Barang Masuk / Pembelian</li>
+<li>🧾 Penjualan</li>
+<li>📋 Stock Opname</li>
+</ul>
+
+<button
+class="btn-primary"
+onclick="backupData()"
+>
+💾 Download Backup
+</button>
+
 </div>
 
+
+<div class="backup-box">
+
+<h3>🔄 Restore Data</h3>
+
+<p>
+Pilih file backup JSON yang sebelumnya dibuat dari aplikasi ini.
+</p>
+
+<input
+type="file"
+id="fileRestore"
+accept=".json"
+>
+
+<br><br>
+
+<button
+class="btn-success"
+onclick="restoreData()"
+>
+🔄 Restore Data
+</button>
+
+</div>
+
+
+<div class="backup-box">
+
+<h3>⚠️ Informasi Data</h3>
+
+<p>
+Data aplikasi disimpan di browser menggunakan
+<strong>localStorage</strong>.
+</p>
+
+<p>
+Jika browser dibersihkan, komputer diganti,
+atau data browser terhapus, data aplikasi dapat hilang.
+Karena itu sangat disarankan melakukan backup secara rutin.
+</p>
+
+<button
+class="btn-danger"
+onclick="hapusSemuaData()"
+>
+🗑️ Hapus Semua Data Aplikasi
+</button>
+
+</div>
+
+</div>
+
+
+</div>
+
+
 <footer>
-TOKO MAGENTHA © 2026 — Sistem Penjualan & Monitoring Stok
+TOKO MAGENTHA © 2026 — Sistem Penjualan, Pembelian & Monitoring Stok
 </footer>
 
 </div>
@@ -963,7 +1329,6 @@ document.getElementById("password").value;
 
 const error=
 document.getElementById("loginError");
-
 
 if(
 username===ADMIN_USERNAME &&
@@ -1060,6 +1425,11 @@ JSON.parse(
 localStorage.getItem("opnameWarung")
 )||[];
 
+let barangMasuk=
+JSON.parse(
+localStorage.getItem("barangMasukWarung")
+)||[];
+
 
 /* =====================================================
 NORMALISASI
@@ -1147,6 +1517,36 @@ Number(x.selisih)||0
 }));
 
 
+barangMasuk=barangMasuk.map(x=>({
+
+...x,
+
+id:Number(x.id),
+
+produkId:
+Number(x.produkId),
+
+qty:
+Number(x.qty)||0,
+
+hargaBeli:
+Number(x.hargaBeli)||0,
+
+total:
+Number(x.total)||0,
+
+tanggal:
+x.tanggal||new Date().toISOString(),
+
+supplier:
+x.supplier||"",
+
+nota:
+x.nota||""
+
+}));
+
+
 /* =====================================================
 SIMPAN DATA
 ===================================================== */
@@ -1166,6 +1566,11 @@ JSON.stringify(penjualan)
 localStorage.setItem(
 "opnameWarung",
 JSON.stringify(opname)
+);
+
+localStorage.setItem(
+"barangMasukWarung",
+JSON.stringify(barangMasuk)
 );
 
 }
@@ -1448,6 +1853,21 @@ return;
 
 
 if(
+barangMasuk.some(
+x=>Number(x.produkId)===Number(id)
+)
+){
+
+alert(
+"Produk tidak dapat dihapus karena memiliki riwayat barang masuk."
+);
+
+return;
+
+}
+
+
+if(
 opname.some(
 x=>Number(x.produkId)===Number(id)
 )
@@ -1494,7 +1914,6 @@ document.getElementById(
 select.innerHTML=
 `<option value="">Pilih Produk</option>`;
 
-
 produk.forEach(p=>{
 
 select.innerHTML+=`
@@ -1513,6 +1932,37 @@ ${rupiah(p.harga)}
 
 });
 
+
+const selectMasuk=
+document.getElementById(
+"produkBarangMasuk"
+);
+
+if(selectMasuk){
+
+selectMasuk.innerHTML=
+`<option value="">Pilih Produk</option>`;
+
+produk.forEach(p=>{
+
+selectMasuk.innerHTML+=`
+
+<option value="${p.id}">
+
+${p.nama}
+-
+Stok ${p.stok}
+-
+Harga Beli ${rupiah(p.hargaBeli)}
+
+</option>
+
+`;
+
+});
+
+}
+
 }
 
 
@@ -1521,8 +1971,9 @@ function isiPilihanEdit(selectId){
 const select=
 document.getElementById(selectId);
 
-select.innerHTML="";
+if(!select)return;
 
+select.innerHTML="";
 
 produk.forEach(p=>{
 
@@ -1544,7 +1995,760 @@ Stok ${p.stok}
 
 
 /* =====================================================
-SIMPAN PENJUALAN
+BARANG MASUK
+===================================================== */
+
+function isiHargaBeliBarangMasuk(){
+
+const id=
+Number(
+document.getElementById(
+"produkBarangMasuk"
+).value
+);
+
+const p=
+produk.find(
+x=>Number(x.id)===id
+);
+
+if(!p)return;
+
+document.getElementById(
+"hargaBeliBarangMasuk"
+).value=
+p.hargaBeli||0;
+
+hitungTotalBarangMasuk();
+
+}
+
+
+function hitungTotalBarangMasuk(){
+
+const qty=
+Number(
+document.getElementById(
+"qtyBarangMasuk"
+).value
+)||0;
+
+const harga=
+Number(
+document.getElementById(
+"hargaBeliBarangMasuk"
+).value
+)||0;
+
+document.getElementById(
+"totalBarangMasuk"
+).innerText=
+rupiah(qty*harga);
+
+}
+
+
+function simpanBarangMasuk(e){
+
+e.preventDefault();
+
+const tanggal=
+document.getElementById(
+"tanggalBarangMasuk"
+).value;
+
+const supplier=
+document.getElementById(
+"supplierBarangMasuk"
+).value.trim();
+
+const nota=
+document.getElementById(
+"notaBarangMasuk"
+).value.trim();
+
+const produkId=
+Number(
+document.getElementById(
+"produkBarangMasuk"
+).value
+);
+
+const qty=
+Number(
+document.getElementById(
+"qtyBarangMasuk"
+).value
+);
+
+const hargaBeli=
+Number(
+document.getElementById(
+"hargaBeliBarangMasuk"
+).value
+);
+
+
+const p=
+produk.find(
+x=>Number(x.id)===produkId
+);
+
+
+if(!p){
+
+alert("Pilih produk.");
+
+return;
+
+}
+
+
+if(!tanggal){
+
+alert("Pilih tanggal.");
+
+return;
+
+}
+
+
+if(!supplier){
+
+alert("Nama supplier wajib diisi.");
+
+return;
+
+}
+
+
+if(qty<=0){
+
+alert("Qty harus lebih dari 0.");
+
+return;
+
+}
+
+
+if(hargaBeli<0){
+
+alert("Harga beli tidak valid.");
+
+return;
+
+}
+
+
+const total=
+qty*hargaBeli;
+
+
+/*
+STOK BERTAMBAH
+*/
+
+p.stok+=qty;
+
+
+/*
+HARGA BELI TERBARU
+*/
+
+p.hargaBeli=
+hargaBeli;
+
+
+barangMasuk.push({
+
+id:Date.now(),
+
+tanggal:
+new Date(
+tanggal+"T"+new Date()
+.toTimeString()
+.slice(0,8)
+).toISOString(),
+
+supplier,
+
+nota,
+
+produkId:p.id,
+
+produk:p.nama,
+
+qty,
+
+hargaBeli,
+
+total
+
+});
+
+
+simpanData();
+
+e.target.reset();
+
+document.getElementById(
+"tanggalBarangMasuk"
+).value=
+tanggalHariIni();
+
+document.getElementById(
+"totalBarangMasuk"
+).innerText=
+rupiah(0);
+
+tampilkanSemua();
+
+alert(
+"Barang masuk berhasil disimpan.\n\n"+
+"Produk: "+p.nama+
+"\nQty: "+qty+
+"\nStok sekarang: "+p.stok+
+"\nTotal pembelian: "+rupiah(total)
+);
+
+}
+
+
+/* =====================================================
+FILTER BARANG MASUK
+===================================================== */
+
+function setTanggalBarangMasukHariIni(){
+
+document.getElementById(
+"filterTanggalBarangMasuk"
+).value=
+tanggalHariIni();
+
+tampilkanBarangMasuk();
+
+}
+
+
+function hapusFilterBarangMasuk(){
+
+document.getElementById(
+"filterTanggalBarangMasuk"
+).value="";
+
+tampilkanBarangMasuk();
+
+}
+
+
+/* =====================================================
+TAMPILKAN BARANG MASUK
+===================================================== */
+
+function tampilkanBarangMasuk(){
+
+const filter=
+document.getElementById(
+"filterTanggalBarangMasuk"
+).value;
+
+
+let data=
+filter
+?barangMasuk.filter(
+x=>tanggalTransaksi(x)===filter
+)
+:barangMasuk;
+
+
+data=
+[...data].sort(
+(a,b)=>
+new Date(b.tanggal)-
+new Date(a.tanggal)
+);
+
+
+let totalQty=0;
+let totalPembelian=0;
+
+
+data.forEach(x=>{
+
+totalQty+=
+Number(x.qty)||0;
+
+totalPembelian+=
+Number(x.total)||0;
+
+});
+
+
+document.getElementById(
+"ringkasanBarangMasuk"
+).innerHTML=`
+
+<div class="total-box">
+
+<div class="total-item">
+Total Transaksi
+<strong>${data.length}</strong>
+</div>
+
+<div class="total-item">
+Total Qty
+<strong>${totalQty}</strong>
+</div>
+
+<div class="total-item">
+Total Pembelian
+<strong>${rupiah(totalPembelian)}</strong>
+</div>
+
+</div>
+
+`;
+
+
+let html=`
+
+<table>
+
+<tr>
+
+<th>No</th>
+<th>Tanggal</th>
+<th>Supplier</th>
+<th>Nota</th>
+<th>Produk</th>
+<th>Qty</th>
+<th>Harga Beli</th>
+<th>Total</th>
+<th>Aksi</th>
+
+</tr>
+`;
+
+
+if(!data.length){
+
+html+=`
+
+<tr>
+
+<td colspan="9" class="empty">
+Belum ada data barang masuk.
+</td>
+
+</tr>
+
+`;
+
+}
+
+
+data.forEach((x,i)=>{
+
+html+=`
+
+<tr>
+
+<td>${i+1}</td>
+
+<td>
+${new Date(x.tanggal)
+.toLocaleString("id-ID")}
+</td>
+
+<td>${x.supplier}</td>
+
+<td>${x.nota||"-"}</td>
+
+<td>${x.produk}</td>
+
+<td>${x.qty}</td>
+
+<td>${rupiah(x.hargaBeli)}</td>
+
+<td>${rupiah(x.total)}</td>
+
+<td>
+
+<div class="action-buttons">
+
+<button
+class="btn-warning"
+onclick="editBarangMasuk(${x.id})"
+>
+✏️ Edit
+</button>
+
+<button
+class="btn-danger"
+onclick="hapusBarangMasuk(${x.id})"
+>
+🗑 Hapus
+</button>
+
+</div>
+
+</td>
+
+</tr>
+
+`;
+
+});
+
+
+html+="</table>";
+
+
+document.getElementById(
+"tabelBarangMasuk"
+).innerHTML=html;
+
+}
+
+
+/* =====================================================
+EDIT BARANG MASUK
+===================================================== */
+
+function editBarangMasuk(id){
+
+const x=
+barangMasuk.find(
+p=>Number(p.id)===Number(id)
+);
+
+if(!x)return;
+
+
+isiPilihanEdit(
+"editProdukBarangMasuk"
+);
+
+
+document.getElementById(
+"editBarangMasukId"
+).value=x.id;
+
+document.getElementById(
+"editSupplierBarangMasuk"
+).value=x.supplier;
+
+document.getElementById(
+"editNotaBarangMasuk"
+).value=x.nota;
+
+document.getElementById(
+"editProdukBarangMasuk"
+).value=x.produkId;
+
+document.getElementById(
+"editQtyBarangMasuk"
+).value=x.qty;
+
+document.getElementById(
+"editHargaBarangMasuk"
+).value=x.hargaBeli;
+
+
+hitungTotalEditBarangMasuk();
+
+
+document.getElementById(
+"editBarangMasukBox"
+).style.display="block";
+
+
+document.getElementById(
+"editBarangMasukBox"
+).scrollIntoView({
+behavior:"smooth"
+});
+
+}
+
+
+function hitungTotalEditBarangMasuk(){
+
+const qty=
+Number(
+document.getElementById(
+"editQtyBarangMasuk"
+).value
+)||0;
+
+const harga=
+Number(
+document.getElementById(
+"editHargaBarangMasuk"
+).value
+)||0;
+
+document.getElementById(
+"editTotalBarangMasuk"
+).innerText=
+rupiah(qty*harga);
+
+}
+
+
+function batalKoreksiBarangMasuk(){
+
+document.getElementById(
+"editBarangMasukBox"
+).style.display="none";
+
+}
+
+
+function simpanKoreksiBarangMasuk(){
+
+const id=
+Number(
+document.getElementById(
+"editBarangMasukId"
+).value
+);
+
+const data=
+barangMasuk.find(
+x=>Number(x.id)===id
+);
+
+if(!data)return;
+
+
+const supplier=
+document.getElementById(
+"editSupplierBarangMasuk"
+).value.trim();
+
+const nota=
+document.getElementById(
+"editNotaBarangMasuk"
+).value.trim();
+
+const produkBaruId=
+Number(
+document.getElementById(
+"editProdukBarangMasuk"
+).value
+);
+
+const qtyBaru=
+Number(
+document.getElementById(
+"editQtyBarangMasuk"
+).value
+);
+
+const hargaBaru=
+Number(
+document.getElementById(
+"editHargaBarangMasuk"
+).value
+);
+
+
+if(!supplier){
+
+alert("Supplier wajib diisi.");
+
+return;
+
+}
+
+
+if(qtyBaru<=0){
+
+alert("Qty harus lebih dari 0.");
+
+return;
+
+}
+
+
+if(hargaBaru<0){
+
+alert("Harga tidak valid.");
+
+return;
+
+}
+
+
+const produkLama=
+produk.find(
+p=>Number(p.id)===Number(data.produkId)
+);
+
+const produkBaru=
+produk.find(
+p=>Number(p.id)===produkBaruId
+);
+
+
+if(!produkBaru){
+
+alert("Produk tidak ditemukan.");
+
+return;
+
+}
+
+
+/*
+KEMBALIKAN STOK TRANSAKSI LAMA
+*/
+
+if(produkLama){
+
+produkLama.stok-=
+Number(data.qty)||0;
+
+}
+
+
+/*
+TAMBAHKAN STOK TRANSAKSI BARU
+*/
+
+produkBaru.stok+=qtyBaru;
+
+
+/*
+UPDATE HARGA BELI PRODUK
+*/
+
+produkBaru.hargaBeli=
+hargaBaru;
+
+
+/*
+UPDATE DATA
+*/
+
+data.supplier=
+supplier;
+
+data.nota=
+nota;
+
+data.produkId=
+produkBaru.id;
+
+data.produk=
+produkBaru.nama;
+
+data.qty=
+qtyBaru;
+
+data.hargaBeli=
+hargaBaru;
+
+data.total=
+qtyBaru*hargaBaru;
+
+
+simpanData();
+
+
+document.getElementById(
+"editBarangMasukBox"
+).style.display="none";
+
+
+tampilkanSemua();
+
+
+alert(
+"Koreksi barang masuk berhasil.\n\n"+
+"Produk: "+produkBaru.nama+
+"\nQty: "+qtyBaru+
+"\nTotal: "+rupiah(data.total)
+);
+
+}
+
+
+/* =====================================================
+HAPUS BARANG MASUK
+===================================================== */
+
+function hapusBarangMasuk(id){
+
+const data=
+barangMasuk.find(
+x=>Number(x.id)===Number(id)
+);
+
+if(!data)return;
+
+
+const p=
+produk.find(
+x=>Number(x.id)===Number(data.produkId)
+);
+
+
+if(!confirm(
+
+"Yakin ingin menghapus barang masuk?\n\n"+
+"Produk: "+data.produk+
+"\nQty: "+data.qty+
+"\nTotal: "+rupiah(data.total)+
+"\n\nStok akan dikurangi kembali sebanyak "+data.qty+" unit."
+
+))return;
+
+
+if(p){
+
+if(p.stok<data.qty){
+
+alert(
+"Stok saat ini lebih kecil dari jumlah barang yang akan dikembalikan.\n\n"+
+"Stok sekarang: "+p.stok+
+"\nQty transaksi: "+data.qty+
+"\n\nTransaksi tidak dapat dihapus karena dapat membuat stok menjadi negatif."
+);
+
+return;
+
+}
+
+
+p.stok-=
+Number(data.qty)||0;
+
+}
+
+
+barangMasuk=
+barangMasuk.filter(
+x=>Number(x.id)!==Number(id)
+);
+
+
+simpanData();
+
+tampilkanSemua();
+
+
+alert(
+"Barang masuk berhasil dihapus.\n\n"+
+"Stok telah dikurangi kembali."
+);
+
+}
+
+
+/* =====================================================
+PENJUALAN
 ===================================================== */
 
 function simpanPenjualan(e){
@@ -1588,9 +2792,7 @@ return;
 
 if(qty<=0){
 
-alert(
-"Qty harus lebih dari 0."
-);
+alert("Qty harus lebih dari 0.");
 
 return;
 
@@ -1599,9 +2801,7 @@ return;
 
 if(qty>p.stok){
 
-alert(
-"Stok tidak mencukupi."
-);
+alert("Stok tidak mencukupi.");
 
 return;
 
@@ -1610,9 +2810,7 @@ return;
 
 if(!metode){
 
-alert(
-"Pilih metode pembayaran."
-);
+alert("Pilih metode pembayaran.");
 
 return;
 
@@ -1919,7 +3117,9 @@ return;
 }
 
 
-/* KEMBALIKAN STOK LAMA */
+/*
+KEMBALIKAN STOK LAMA
+*/
 
 if(produkLama){
 
@@ -1929,7 +3129,9 @@ Number(transaksi.qty)||0;
 }
 
 
-/* CEK STOK */
+/*
+CEK STOK
+*/
 
 if(qtyBaru>produkBaru.stok){
 
@@ -1944,8 +3146,7 @@ alert(
 "Stok tidak mencukupi.\n\n"+
 "Stok tersedia: "+
 produkBaru.stok+
-"\nQty: "+
-qtyBaru
+"\nQty: "+qtyBaru
 );
 
 return;
@@ -1953,12 +3154,16 @@ return;
 }
 
 
-/* KURANGI STOK BARU */
+/*
+KURANGI STOK BARU
+*/
 
 produkBaru.stok-=qtyBaru;
 
 
-/* HITUNG ULANG */
+/*
+HITUNG ULANG
+*/
 
 const modal=
 produkBaru.hargaBeli*
@@ -1969,7 +3174,9 @@ produkBaru.harga*
 qtyBaru;
 
 
-/* UPDATE */
+/*
+UPDATE
+*/
 
 transaksi.produkId=
 produkBaru.id;
@@ -2179,8 +3386,7 @@ if(!confirm(
 "Semua transaksi tanggal "+
 tanggal+
 " akan dihapus.\n\n"+
-"Jumlah transaksi: "+
-data.length+
+"Jumlah transaksi: "+data.length+
 "\nTotal Qty: "+qty+
 "\nTotal Omzet: "+rupiah(omzet)+
 "\n\nStok akan dikembalikan otomatis."
@@ -2346,7 +3552,8 @@ html+=`
 <td>${i+1}</td>
 
 <td>
-${new Date(x.tanggal).toLocaleString("id-ID")}
+${new Date(x.tanggal)
+.toLocaleString("id-ID")}
 </td>
 
 <td>${x.produk}</td>
@@ -2453,9 +3660,7 @@ min="0"
 
 </td>
 
-<td>
--
-</td>
+<td>Stok saat ini</td>
 
 <td>
 
@@ -2556,13 +3761,6 @@ if(!confirm(
 ))return;
 
 
-/*
-SIMPAN RIWAYAT LENGKAP
-
-stokSistem = stok sebelum opname
-stokFisik = stok hasil opname
-*/
-
 opname.push({
 
 id:Date.now(),
@@ -2625,18 +3823,6 @@ tampilkanRiwayatOpname();
 }
 
 
-/*
-MENCARI STOK SAAT INI
-
-Untuk koreksi/hapus opname:
-kita perlu memperhatikan perubahan stok
-setelah opname.
-
-Cara yang digunakan:
-stok saat ini dikurangi efek opname lama,
-kemudian diberi efek opname baru.
-*/
-
 function koreksiOpname(id){
 
 const data=
@@ -2669,21 +3855,10 @@ const stokSekarang=
 Number(p.stok);
 
 
-/*
-Estimasi stok setelah menghapus
-efek opname ini.
-
-Efek opname = stokFisik - stokSistem
-*/
-
 const efekLama=
 Number(data.stokFisik)-
 Number(data.stokSistem);
 
-
-/*
-Stok dasar sebelum opname.
-*/
 
 const stokDasar=
 stokSekarang-efekLama;
@@ -2726,16 +3901,8 @@ const selisihBaru=
 stokBaru-stokDasar;
 
 
-/*
-Update stok produk.
-*/
-
 p.stok=stokBaru;
 
-
-/*
-Update riwayat.
-*/
 
 data.stokSistem=
 stokDasar;
@@ -2763,7 +3930,7 @@ alert(
 
 
 /* =====================================================
-HAPUS RIWAYAT OPNAME
+HAPUS OPNAME
 ===================================================== */
 
 function hapusOpname(id){
@@ -2800,12 +3967,6 @@ new Date(data.tanggal)
 ))return;
 
 
-/*
-Kembalikan stok ke kondisi sebelum opname.
-
-stok sekarang - efek opname
-*/
-
 if(p){
 
 const efek=
@@ -2815,20 +3976,10 @@ Number(data.stokSistem);
 p.stok=
 Number(p.stok)-efek;
 
-
-/*
-Jangan sampai negatif karena
-kesalahan data.
-*/
-
 if(p.stok<0)p.stok=0;
 
 }
 
-
-/*
-Hapus riwayat.
-*/
 
 opname=
 opname.filter(
@@ -2868,10 +4019,6 @@ x=>tanggalTransaksi(x)===filter
 )
 :opname;
 
-
-/*
-Urutkan terbaru di atas.
-*/
 
 data=
 [...data].sort(
@@ -3034,6 +4181,16 @@ a+Number(x.keuntungan||0),
 );
 
 
+const pembelian=
+barangMasuk.filter(
+x=>tanggalTransaksi(x)===hari
+).reduce(
+(a,x)=>
+a+Number(x.total||0),
+0
+);
+
+
 document.getElementById(
 "penjualanHariIni"
 ).innerText=
@@ -3044,6 +4201,12 @@ document.getElementById(
 "untungHariIni"
 ).innerText=
 rupiah(untung);
+
+
+document.getElementById(
+"pembelianHariIni"
+).innerText=
+rupiah(pembelian);
 
 
 document.getElementById(
@@ -3103,6 +4266,23 @@ ${rendah
 `;
 
 });
+
+
+if(!produk.length){
+
+html+=`
+
+<tr>
+
+<td colspan="5" class="empty">
+Belum ada produk.
+</td>
+
+</tr>
+
+`;
+
+}
 
 
 html+="</table>";
@@ -3381,11 +4561,346 @@ document.getElementById(
 ).innerHTML=html;
 
 
+tampilkanRiwayatOpname();
+
+}
+
+
+/* =====================================================
+BACKUP DATA
+===================================================== */
+
+function backupData(){
+
+const dataBackup={
+
+namaAplikasi:"TOKO MAGENTHA",
+
+versi:"2026.1",
+
+tanggalBackup:
+new Date().toISOString(),
+
+produk:produk,
+
+penjualan:penjualan,
+
+opname:opname,
+
+barangMasuk:barangMasuk
+
+};
+
+
+const json=
+JSON.stringify(
+dataBackup,
+null,
+2
+);
+
+
+const blob=
+new Blob(
+[json],
+{
+type:"application/json"
+}
+);
+
+
+const url=
+URL.createObjectURL(blob);
+
+
+const a=
+document.createElement("a");
+
+
+const waktu=
+new Date()
+.toISOString()
+.replace(/[:.]/g,"-");
+
+
+a.href=url;
+
+a.download=
+"TOKO-MAGENTHA-BACKUP-"+
+waktu+
+".json";
+
+
+document.body.appendChild(a);
+
+a.click();
+
+document.body.removeChild(a);
+
+URL.revokeObjectURL(url);
+
+
+alert(
+"Backup berhasil dibuat.\n\n"+
+"Data Produk: "+produk.length+
+"\nBarang Masuk: "+barangMasuk.length+
+"\nPenjualan: "+penjualan.length+
+"\nStock Opname: "+opname.length
+);
+
+}
+
+
+/* =====================================================
+RESTORE DATA
+===================================================== */
+
+function restoreData(){
+
+const input=
+document.getElementById(
+"fileRestore"
+);
+
+if(!input.files.length){
+
+alert(
+"Silakan pilih file backup JSON terlebih dahulu."
+);
+
+return;
+
+}
+
+
+const file=
+input.files[0];
+
+
+const reader=
+new FileReader();
+
+
+reader.onload=function(e){
+
+try{
+
+const data=
+JSON.parse(e.target.result);
+
+
+if(
+!data ||
+!Array.isArray(data.produk) ||
+!Array.isArray(data.penjualan) ||
+!Array.isArray(data.opname) ||
+!Array.isArray(data.barangMasuk)
+){
+
+alert(
+"File backup tidak valid."
+);
+
+return;
+
+}
+
+
+if(!confirm(
+
+"PERINGATAN!\n\n"+
+"Restore akan mengganti data aplikasi saat ini dengan data backup.\n\n"+
+"Produk: "+data.produk.length+
+"\nBarang Masuk: "+data.barangMasuk.length+
+"\nPenjualan: "+data.penjualan.length+
+"\nStock Opname: "+data.opname.length+
+"\n\nLanjutkan restore?"
+
+))return;
+
+
+produk=
+data.produk;
+
+penjualan=
+data.penjualan;
+
+opname=
+data.opname;
+
+barangMasuk=
+data.barangMasuk;
+
+
 /*
-Tampilkan riwayat opname
+NORMALISASI ULANG
 */
 
-tampilkanRiwayatOpname();
+produk=produk.map(p=>({
+
+...p,
+
+id:Number(p.id),
+
+hargaBeli:Number(p.hargaBeli)||0,
+
+harga:Number(p.harga)||0,
+
+stok:Number(p.stok)||0,
+
+minimum:Number(p.minimum)||5
+
+}));
+
+
+penjualan=penjualan.map(x=>({
+
+...x,
+
+id:Number(x.id),
+
+qty:Number(x.qty)||0,
+
+hargaBeli:Number(x.hargaBeli)||0,
+
+harga:Number(x.harga)||0,
+
+modal:Number(x.modal)||0,
+
+total:Number(x.total)||0,
+
+keuntungan:Number(x.keuntungan)||0,
+
+metodePembayaran:
+x.metodePembayaran||"Tunai"
+
+}));
+
+
+opname=opname.map(x=>({
+
+...x,
+
+id:Number(x.id),
+
+produkId:Number(x.produkId),
+
+stokSistem:Number(x.stokSistem)||0,
+
+stokFisik:Number(x.stokFisik)||0,
+
+selisih:Number(x.selisih)||0
+
+}));
+
+
+barangMasuk=barangMasuk.map(x=>({
+
+...x,
+
+id:Number(x.id),
+
+produkId:Number(x.produkId),
+
+qty:Number(x.qty)||0,
+
+hargaBeli:Number(x.hargaBeli)||0,
+
+total:Number(x.total)||0
+
+}));
+
+
+simpanData();
+
+tampilkanSemua();
+
+
+alert(
+"Restore berhasil!\n\n"+
+"Semua data backup sudah dimasukkan kembali."
+);
+
+
+input.value="";
+
+
+}catch(error){
+
+alert(
+"File backup gagal dibaca.\n\n"+
+"Pastikan file JSON berasal dari aplikasi TOKO MAGENTHA."
+);
+
+}
+
+};
+
+
+reader.readAsText(file);
+
+}
+
+
+/* =====================================================
+HAPUS SEMUA DATA
+===================================================== */
+
+function hapusSemuaData(){
+
+const konfirmasi=
+prompt(
+
+"PERINGATAN!\n\n"+
+"Semua data produk, barang masuk, penjualan dan stock opname akan dihapus.\n\n"+
+"Ketik HAPUS untuk melanjutkan:"
+
+);
+
+
+if(konfirmasi!=="HAPUS"){
+
+alert(
+"Penghapusan dibatalkan."
+);
+
+return;
+
+}
+
+
+localStorage.removeItem(
+"produkWarung"
+);
+
+localStorage.removeItem(
+"penjualanWarung"
+);
+
+localStorage.removeItem(
+"opnameWarung"
+);
+
+localStorage.removeItem(
+"barangMasukWarung"
+);
+
+
+produk=[];
+
+penjualan=[];
+
+opname=[];
+
+barangMasuk=[];
+
+
+tampilkanSemua();
+
+
+alert(
+"Semua data aplikasi berhasil dihapus."
+);
 
 }
 
@@ -3405,6 +4920,8 @@ tampilkanPilihanProduk();
 tampilkanPenjualan();
 
 tampilkanOpname();
+
+tampilkanBarangMasuk();
 
 tampilkanLaporan();
 
@@ -3426,6 +4943,12 @@ tanggalHariIni();
 
 document.getElementById(
 "filterTanggalLaporan"
+).value=
+tanggalHariIni();
+
+
+document.getElementById(
+"tanggalBarangMasuk"
 ).value=
 tanggalHariIni();
 
